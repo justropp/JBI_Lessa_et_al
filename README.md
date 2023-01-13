@@ -76,10 +76,8 @@ yy<-complete.cases(chara$first_published)
 
 chara1<-chara[yy,]
 
-#### count taxonomic status for each year of publication
-
 chara2 <- chara1 %>% group_by(first_published,Status) %>% 
-  tally()
+  tally() #### count taxonomic status for each year of publication
 
 chara3<-as.data.frame(spread(chara2, key = Status, value = n)) # Change from long to wide format
 
