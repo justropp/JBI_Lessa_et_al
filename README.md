@@ -58,3 +58,66 @@ sola<-subset(wcvp_names, wcvp_names$family == "Solanaceae " & wcvp_names$taxon_r
 
 ### Characidae
 Data was downloaded from Froese, R., & Pauly., D. (2022). FishBase version 08/2022; www.fishbase.org.
+
+chara<-read.csv("Characidae.csv")
+
+#### Extract only species name and year of publication
+chara$Scientifc_name2 <- gsub("[()]", "", chara$Scientifc_name) # delete parenteses
+
+chara$Scientifc_name3 <- gsub("<a0>", " ", chara$Scientifc_name2) # delete parenteses
+
+chara$Scientifc_name4<-word(chara$Scientifc_name3, 1,2, sep=" ") # select fist two words
+
+chara$first_published<-readr::parse_number(chara$Scientifc_name)
+
+#### Select only rows with complete cases on "first_published"
+
+yy<-complete.cases(chara$first_published)
+
+chara1<-chara[yy,]
+
+#### count taxonomic status for each year of publication
+
+chara2 <- chara1 %>% group_by(first_published,Status) %>% 
+  tally()
+
+chara3<-as.data.frame(spread(chara2, key = Status, value = n)) # Change from long to wide format
+
+chara3[is.na(chara3)] <- 0 # replace NAs by zero
+
+ncol(chara3)
+chara3$N_desc <- rowSums(chara3[2:ncol(chara3)], na.rm = TRUE)
+
+chara3$prop_acc<-chara3$accepted/chara3$N_desc
+
+chara3$years_since_desc<-2022-chara3$first_published
+
+#### Plot
+
+p<-ggplot(chara3, aes(years_since_desc, prop_acc, color = N_sp)) +
+
+  geom_point(size = 4, alpha = 0.8) +
+  
+  geom_smooth(method = "loess", color = "black", size = 0.8)+
+  
+  ylim(0,1)+
+  
+  scale_colour_viridis(limits = c(1, 250), option = "viridis", trans = "log10") +
+  
+  theme_light()+
+  
+  labs(y = "Proportion of accepted species", x = "Years since first description")
+  
+p + theme(
+
+  axis.title.x = element_text(color="grey21", size=18),
+  
+  axis.title.y = element_text(color="grey21", size=18),
+  
+  axis.text.x = element_text(color="grey21", size=18),
+  
+  axis.text.y = element_text(color="grey21", size=18)
+)
+
+
+
