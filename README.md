@@ -1,10 +1,8 @@
 # JBI_Lessa_et_al
-#
-Data and figure for "How taxonomic change influences forecasts of the Linnean Shortfall" (Lessa et al. under review)
 
-# Data and Figure for "How taxonomic change influences forecasts of the Linnean Shortfall" (Lessa et al. under review)
+# Data and figure for "How taxonomic change influences forecasts of the Linnean Shortfall" (Lessa et al. under review)
 
-Download and manipulate data for Fagaceae and Solanaceae
+### Download and manipulate data for Fagaceae and Solanaceae
 
 require(kewr, dplyr, tidyr, ggplot, viridis)
 
